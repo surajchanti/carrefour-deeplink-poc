@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Carrefour Deep-Link Bridge PoC</title>
+</head>
+<body>
+    <h1>Deep-Link Bridge PoC</h1>
+    <pre id="output">Testing...</pre>
+
+<script>
+const output = document.getElementById("output");
+
+const bridge = typeof window.flutter_inappwebview;
+
+let result = "flutter_inappwebview=" + bridge;
+
+if (window.flutter_inappwebview) {
+    result += "\nbridge keys=" +
+        Object.keys(window.flutter_inappwebview).join(", ");
+
+    // Harmless bridge-presence test.
+    try {
+        window.flutter_inappwebview.callHandler(
+            "securityProbe",
+            "test"
+        ).then(function(value) {
+            result += "\nsecurityProbe response=" +
+                JSON.stringify(value);
+            output.textContent = result;
+        }).catch(function(error) {
+            result += "\nsecurityProbe error";
+            output.textContent = result;
+        });
+    } catch (e) {
+        result += "\nsecurityProbe threw an exception";
+        output.textContent = result;
+    }
+}
+
+output.textContent = result;
+</script>
+</body>
+</html>
