@@ -1,76 +1,10 @@
-```html
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Carrefour Deep-Link Bridge PoC</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 30px;
-            font-size: 24px;
-        }
-
-        h1 {
-            font-size: 36px;
-        }
-
-        #output {
-            font-size: 28px;
-            font-weight: bold;
-            white-space: pre-wrap;
-            word-break: break-word;
-            padding: 20px;
-            line-height: 1.6;
-        }
-    </style>
-</head>
-
-<body>
-
-<h1>Deep-Link Bridge PoC</h1>
-
-<pre id="output">Testing...</pre>
-
 <script>
-var out = "bridge=" + (typeof window.flutter_inappwebview);
-
-if (window.flutter_inappwebview) {
-
-    out += "\nkeys=" +
-        Object.keys(window.flutter_inappwebview).join(",");
-
-    try {
-        window.flutter_inappwebview
-            .callHandler("securityProbe", "test")
-            .then(function(v) {
-
-                out += "\nsecurityProbe=>" +
-                    JSON.stringify(v);
-
-                document.getElementById("output").textContent = out;
-
-            })
-            .catch(function(e) {
-
-                out += "\nsecurityProbe=ERR";
-
-                document.getElementById("output").textContent = out;
-            });
-
-    } catch (e) {
-
-        out += "\nsecurityProbe=THROW";
-
-        document.getElementById("output").textContent = out;
-    }
-}
+var out =
+    "cookie=" + (document.cookie ? "PRESENT" : "EMPTY") +
+    " | localStorage=" + (localStorage.length > 0 ? "PRESENT" : "EMPTY") +
+    " | UA=" + navigator.userAgent +
+    " | window.open=" + typeof window.open +
+    " | document=" + typeof document;
 
 document.getElementById("output").textContent = out;
 </script>
-
-</body>
-</html>
-```
