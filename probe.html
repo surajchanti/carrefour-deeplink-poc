@@ -1,44 +1,69 @@
-<!doctype html>
-<html>
+```html
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Carrefour Deep-Link Bridge PoC</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrefour Account Security - PoC</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    p {
+      font-size: 24px;
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: 24px;
+      padding: 16px 28px;
+      margin: 25px 0;
+      cursor: pointer;
+    }
+
+    .notice {
+      margin-top: 30px;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>Deep-Link Bridge PoC</h1>
+  <h1>CARREFOUR ACCOUNT SECURITY</h1>
 
-<pre id="output">Testing...</pre>
+  <p>Your session requires verification.</p>
 
-<script>
-var out = "bridge=" + (typeof window.flutter_inappwebview);
+  <button type="button" onclick="showPoC()">
+    Test Verification
+  </button>
 
-if (window.flutter_inappwebview) {
-    out += " keys=" +
-        Object.keys(window.flutter_inappwebview).join(",");
+  <p id="result"></p>
 
-    try {
-        window.flutter_inappwebview
-            .callHandler("securityProbe", "test")
-            .then(function(v) {
-                out += " | securityProbe=>" +
-                    JSON.stringify(v);
+  <div class="notice">
+    This is a researcher-controlled proof-of-concept page.<br>
+    No credentials are collected or transmitted.
+  </div>
 
-                document.getElementById("output").textContent = out;
-            })
-            .catch(function(e) {
-                out += " | securityProbe=ERR";
-                document.getElementById("output").textContent = out;
-            });
-
-    } catch (e) {
-        out += " | securityProbe=THROW";
-        document.getElementById("output").textContent = out;
+  <script>
+    function showPoC() {
+      document.getElementById("result").textContent =
+        "PoC verification completed successfully.";
     }
-}
-
-document.getElementById("output").textContent = out;
-</script>
+  </script>
 
 </body>
 </html>
+```
